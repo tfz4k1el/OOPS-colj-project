@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480" width="100%" height="auto">
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.12"/>
+    </filter>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#1e293b"/>
+    </marker>
+  </defs>
+
+  <rect width="800" height="480" fill="#ffffff" rx="6" stroke="#cbd5e1" stroke-width="1"/>
+
+  <rect x="250" y="20" width="300" height="35" rx="4" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1"/>
+  <text x="400" y="43" font-family="Times New Roman" font-size="14" font-weight="bold" text-anchor="middle" fill="#1e293b">DFD Level 2: Core Allocation Logic Breakdown</text>
+
+  <!-- Process 2.1: Duplicate Plate Check -->
+  <circle cx="160" cy="140" r="48" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="160" y="132" font-family="Times New Roman" font-size="11" font-weight="bold" text-anchor="middle" fill="#1d4ed8">2.1</text>
+  <text x="160" y="148" font-family="Times New Roman" font-size="11" font-weight="bold" text-anchor="middle" fill="#1e293b">Duplicate Guard</text>
+
+  <!-- Process 2.2: Slot Type Matcher -->
+  <circle cx="400" cy="140" r="48" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="400" y="132" font-family="Times New Roman" font-size="11" font-weight="bold" text-anchor="middle" fill="#1d4ed8">2.2</text>
+  <text x="400" y="148" font-family="Times New Roman" font-size="11" font-weight="bold" text-anchor="middle" fill="#1e293b">Type Matching</text>
+
+  <!-- Process 2.3: Floor Priority Locator -->
+  <circle cx="640" cy="140" r="48" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="640" y="132" font-family="Times New Roman" font-size="11" font-weight="bold" text-anchor="middle" fill="#1d4ed8">2.3</text>
+  <text x="640" y="148" font-family="Times New Roman" font-size="11" font-weight="bold" text-anchor="middle" fill="#1e293b">Floor Priority</text>
+
+  <!-- Process 2.4: Atomic Slot Mutator -->
+  <circle cx="400" cy="330" r="50" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="400" y="322" font-family="Times New Roman" font-size="11" font-weight="bold" text-anchor="middle" fill="#15803d">2.4</text>
+  <text x="400" y="338" font-family="Times New Roman" font-size="11" font-weight="bold" text-anchor="middle" fill="#1e293b">Atomic Mutator</text>
+  <text x="400" y="352" font-family="Times New Roman" font-size="9" text-anchor="middle" fill="#15803d">(assignVehicle)</text>
+
+  <!-- Process 2.5: Ticket Generator -->
+  <circle cx="640" cy="330" r="50" fill="#fefce8" stroke="#ca8a04" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="640" y="322" font-family="Times New Roman" font-size="11" font-weight="bold" text-anchor="middle" fill="#ca8a04">2.5</text>
+  <text x="640" y="338" font-family="Times New Roman" font-size="11" font-weight="bold" text-anchor="middle" fill="#1e293b">Ticket Token</text>
+  <text x="640" y="352" font-family="Times New Roman" font-size="9" text-anchor="middle" fill="#854d0e">(TKT-XXXXX)</text>
+
+  <!-- Connectors -->
+  <line x1="208" y1="140" x2="352" y2="140" stroke="#1e293b" stroke-width="1.5" marker-end="url(#ar)"/>
+  <text x="280" y="132" font-family="Times New Roman" font-size="10" text-anchor="middle" fill="#475569">Unregistered Plate</text>
+
+  <line x1="448" y1="140" x2="592" y2="140" stroke="#1e293b" stroke-width="1.5" marker-end="url(#ar)"/>
+  <text x="520" y="132" font-family="Times New Roman" font-size="10" text-anchor="middle" fill="#475569">Car/Bike Validated</text>
+
+  <line x1="640" y1="188" x2="450" y2="310" stroke="#1e293b" stroke-width="1.5" marker-end="url(#ar)"/>
+  <text x="570" y="245" font-family="Times New Roman" font-size="10" fill="#475569">Available Candidate (F1 -&gt; F2)</text>
+
+  <line x1="450" y1="330" x2="590" y2="330" stroke="#1e293b" stroke-width="1.5" marker-end="url(#ar)"/>
+  <text x="520" y="322" font-family="Times New Roman" font-size="10" text-anchor="middle" fill="#475569">Slot Locked</text>
+</svg>
