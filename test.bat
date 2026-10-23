@@ -3,7 +3,8 @@ echo ========================================================
 echo  Running Automated Tests for PLMS
 echo ========================================================
 
-set "JAVA_BIN=C:\Program Files\Eclipse Adoptium\jdk-17.0.20.101-hotspot\bin"
+set "JAVA_BIN=C:\Program Files\Microsoft\jdk-17.0.20.101-hotspot\bin"
+if not exist "%JAVA_BIN%\java.exe" set "JAVA_BIN=C:\Program Files\Eclipse Adoptium\jdk-17.0.20.101-hotspot\bin"
 
 if exist "%JAVA_BIN%\java.exe" (
     set "JAVA=%JAVA_BIN%\java.exe"

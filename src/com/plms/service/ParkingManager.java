@@ -57,6 +57,19 @@ public class ParkingManager {
     }
 
     /**
+     * Finds a slot by its unique identifier (e.g. F1-C01).
+     */
+    public synchronized ParkingSlot findSlotById(String slotId) {
+        if (slotId == null) return null;
+        for (ParkingSlot slot : slots) {
+            if (slot.getSlotId().equalsIgnoreCase(slotId.trim())) {
+                return slot;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Parks a vehicle into an assigned slot and creates a Booking ticket.
      */
     public synchronized Booking checkInVehicle(Vehicle vehicle, ParkingSlot targetSlot) {

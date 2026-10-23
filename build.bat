@@ -3,7 +3,8 @@ echo ========================================================
 echo  Compiling Parking Lot Management System (PLMS)
 echo ========================================================
 
-set "JAVA_BIN=C:\Program Files\Eclipse Adoptium\jdk-17.0.20.101-hotspot\bin"
+set "JAVA_BIN=C:\Program Files\Microsoft\jdk-17.0.20.101-hotspot\bin"
+if not exist "%JAVA_BIN%\javac.exe" set "JAVA_BIN=C:\Program Files\Eclipse Adoptium\jdk-17.0.20.101-hotspot\bin"
 
 if exist "%JAVA_BIN%\javac.exe" (
     set "JAVAC=%JAVA_BIN%\javac.exe"
