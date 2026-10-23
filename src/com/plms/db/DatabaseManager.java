@@ -16,11 +16,16 @@ import java.util.*;
  * local file fallback to ensure zero-dependency instant execution.
  */
 public class DatabaseManager {
-    private static final String CSV_FILE = "parking_records.csv";
+    private final String csvFile;
     private Connection connection = null;
     private boolean isJdbcAvailable = false;
 
     public DatabaseManager() {
+        this("parking_records.csv");
+    }
+
+    public DatabaseManager(String csvFile) {
+        this.csvFile = csvFile != null ? csvFile : "parking_records.csv";
         initStorage();
     }
 
@@ -55,7 +60,7 @@ public class DatabaseManager {
     }
 
     private void initFileStorage() {
-        File file = new File(CSV_FILE);
+        File file = new File(csvFile);
         if (!file.exists()) {
             try (PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))) {
                 writer.println("TicketId,LicensePlate,VehicleType,SlotId,EntryTime,ExitTime,DurationMinutes,FeeAmount,PaymentStatus");
@@ -83,7 +88,7 @@ public class DatabaseManager {
         }
 
         // File log fallback
-        try (PrintWriter out = new PrintWriter(new OutputStreamWriter(new FileOutputStream(CSV_FILE, true), StandardCharsets.UTF_8))) {
+        try (PrintWriter out = new PrintWriter(new OutputStreamWriter(new FileOutputStream(csvFile, true), StandardCharsets.UTF_8))) {
             out.printf("%s,%s,%s,%s,%s,,,0.0,%s%n",
                     booking.getTicketId(),
                     booking.getLicensePlate(),
@@ -113,7 +118,7 @@ public class DatabaseManager {
         }
 
         // In-place CSV row update to prevent duplicate ticket lines
-        File file = new File(CSV_FILE);
+        File file = new File(csvFile);
         List<String> lines = new ArrayList<>();
         boolean updated = false;
         String updatedRow = String.format("%s,%s,%s,%s,%s,%s,%d,%.2f,%s",
@@ -158,7 +163,7 @@ public class DatabaseManager {
 
     public List<Booking> loadAllBookings() {
         List<Booking> list = new ArrayList<>();
-        File file = new File(CSV_FILE);
+        File file = new File(csvFile);
         if (!file.exists()) return list;
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))) {

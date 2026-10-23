@@ -24,8 +24,8 @@ import java.util.Random;
 
 /**
  * Revamped Desktop Control Center for the Parking Lot Management System.
- * Features a modern slate/indigo theme, live digital clock, dynamic KPI metrics,
- * interactive floor plans with occupancy meters, real-time search table, and one-click demo tools.
+ * Uses pure Java2D vector icons via UiIcon to guarantee flawless rendering
+ * on any platform without missing font glyphs or broken emojis.
  */
 public class MainFrame extends JFrame {
     private final ParkingManager parkingManager;
@@ -113,26 +113,12 @@ public class MainFrame extends JFrame {
         header.setBackground(new Color(15, 23, 42)); // Slate 900
         header.setBorder(new EmptyBorder(14, 20, 14, 20));
 
-        // Left Branding
+        // Left Branding with Vector Parking Icon
         JPanel brandBox = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 0));
         brandBox.setOpaque(false);
 
-        // Custom Parking Logo Badge
-        JLabel logoBadge = new JLabel("🅿️", SwingConstants.CENTER) {
-            @Override
-            protected void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                GradientPaint gp = new GradientPaint(0, 0, new Color(37, 99, 235), getWidth(), getHeight(), new Color(79, 70, 229));
-                g2.setPaint(gp);
-                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 10, 10);
-                g2.dispose();
-                super.paintComponent(g);
-            }
-        };
-        logoBadge.setPreferredSize(new Dimension(38, 38));
-        logoBadge.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 20));
-        logoBadge.setForeground(Color.WHITE);
+        JLabel logoBadge = new JLabel(UiIcon.parkingLogo(36));
+        logoBadge.setPreferredSize(new Dimension(36, 36));
 
         JPanel titleBox = new JPanel(new GridLayout(2, 1, 0, 2));
         titleBox.setOpaque(false);
@@ -156,14 +142,15 @@ public class MainFrame extends JFrame {
         JPanel statusBox = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 0));
         statusBox.setOpaque(false);
 
-        // Live Clock
-        liveClockLabel = new JLabel(LocalDateTime.now().format(DATE_TIME_FMT));
+        // Live Clock with Clock Vector Icon
+        liveClockLabel = new JLabel(" " + LocalDateTime.now().format(DATE_TIME_FMT));
+        liveClockLabel.setIcon(UiIcon.clock(14, new Color(148, 163, 184)));
         liveClockLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         liveClockLabel.setForeground(new Color(203, 213, 225));
         statusBox.add(liveClockLabel);
 
-        // System Online Pill
-        JLabel statusPill = new JLabel("● SYSTEM ACTIVE", SwingConstants.CENTER) {
+        // System Online Pill with Vector Status Dot
+        JLabel statusPill = new JLabel(" SYSTEM ACTIVE", SwingConstants.CENTER) {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
@@ -177,6 +164,7 @@ public class MainFrame extends JFrame {
                 super.paintComponent(g);
             }
         };
+        statusPill.setIcon(UiIcon.availableDot(9));
         statusPill.setFont(new Font("Segoe UI", Font.BOLD, 11));
         statusPill.setForeground(new Color(167, 243, 208));
         statusPill.setBorder(new EmptyBorder(4, 10, 4, 10));
@@ -193,24 +181,24 @@ public class MainFrame extends JFrame {
 
         // 1. Total Slots
         JPanel totalCard = createKpiCard("TOTAL CAPACITY", "12", "12 Total Slots (Dual Deck)",
-                new Color(59, 130, 246), new Color(239, 246, 255), "🏢");
+                new Color(59, 130, 246), new Color(239, 246, 255), UiIcon.building(28, new Color(59, 130, 246)));
         totalSlotsVal = (JLabel) totalCard.getClientProperty("valLabel");
 
         // 2. Available Slots
         JPanel availCard = createKpiCard("AVAILABLE SLOTS", "12", "100% Free Capacity",
-                new Color(16, 185, 129), new Color(240, 253, 244), "🟢");
+                new Color(16, 185, 129), new Color(240, 253, 244), UiIcon.availableDot(24));
         availableSlotsVal = (JLabel) availCard.getClientProperty("valLabel");
         availableSubVal = (JLabel) availCard.getClientProperty("subLabel");
 
         // 3. Occupied Slots
         JPanel occCard = createKpiCard("CURRENTLY PARKED", "0", "0% Occupancy",
-                new Color(239, 68, 68), new Color(254, 242, 242), "🔴");
+                new Color(239, 68, 68), new Color(254, 242, 242), UiIcon.occupiedDot(24));
         occupiedSlotsVal = (JLabel) occCard.getClientProperty("valLabel");
         occupiedSubVal = (JLabel) occCard.getClientProperty("subLabel");
 
         // 4. Revenue Today
-        JPanel revCard = createKpiCard("TOTAL REVENUE", "₹ 0.00", "0 Completed Bookings",
-                new Color(217, 119, 6), new Color(254, 252, 232), "💰");
+        JPanel revCard = createKpiCard("TOTAL REVENUE", "Rs. 0.00", "0 Completed Bookings",
+                new Color(217, 119, 6), new Color(254, 252, 232), UiIcon.revenue(28, new Color(217, 119, 6)));
         revenueVal = (JLabel) revCard.getClientProperty("valLabel");
         revenueSubVal = (JLabel) revCard.getClientProperty("subLabel");
 
@@ -221,7 +209,7 @@ public class MainFrame extends JFrame {
         return banner;
     }
 
-    private JPanel createKpiCard(String title, String val, String sub, Color accent, Color bg, String icon) {
+    private JPanel createKpiCard(String title, String val, String sub, Color accent, Color bg, Icon icon) {
         JPanel card = new JPanel(new BorderLayout(8, 4)) {
             @Override
             protected void paintComponent(Graphics g) {
@@ -262,7 +250,7 @@ public class MainFrame extends JFrame {
         textBox.add(subLbl);
 
         JLabel iconLbl = new JLabel(icon);
-        iconLbl.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 22));
+        iconLbl.setPreferredSize(new Dimension(32, 32));
 
         card.add(textBox, BorderLayout.CENTER);
         card.add(iconLbl, BorderLayout.EAST);
@@ -279,7 +267,7 @@ public class MainFrame extends JFrame {
         opsPanel.setOpaque(false);
 
         // --- Card 1: Check-in Box ---
-        JPanel checkInBox = createStyledCard("📥 Vehicle Check-In (Entry)");
+        JPanel checkInBox = createStyledCard("Vehicle Check-In (Entry)", UiIcon.checkIn(16, new Color(37, 99, 235)));
         checkInBox.add(createFieldLabel("License Plate Number:"));
         plateField = new JTextField();
         plateField.setFont(new Font("Consolas", Font.BOLD, 14));
@@ -290,8 +278,10 @@ public class MainFrame extends JFrame {
         checkInBox.add(Box.createVerticalStrut(8));
 
         checkInBox.add(createFieldLabel("Vehicle Category & Tariff:"));
-        carRadio = new JRadioButton("🚗 Car (₹20/hr)", true);
-        bikeRadio = new JRadioButton("🏍️ Bike (₹10/hr)");
+        carRadio = new JRadioButton(" Car (Rs. 20/hr)", true);
+        carRadio.setIcon(UiIcon.car(16, new Color(59, 130, 246)));
+        bikeRadio = new JRadioButton(" Bike (Rs. 10/hr)");
+        bikeRadio.setIcon(UiIcon.bike(16, new Color(139, 92, 246)));
         carRadio.setFont(new Font("Segoe UI", Font.BOLD, 12));
         bikeRadio.setFont(new Font("Segoe UI", Font.BOLD, 12));
         carRadio.setOpaque(false);
@@ -318,8 +308,9 @@ public class MainFrame extends JFrame {
         checkInBox.add(preferredSlotCombo);
         checkInBox.add(Box.createVerticalStrut(10));
 
-        ModernButton checkInBtn = new ModernButton("✓ Assign Slot & Check-In",
+        ModernButton checkInBtn = new ModernButton(" Assign Slot & Check-In",
                 new Color(37, 99, 235), new Color(29, 78, 216));
+        checkInBtn.setIcon(UiIcon.checkMark(14, Color.WHITE));
         checkInBtn.setPreferredSize(new Dimension(280, 36));
         checkInBtn.setMaximumSize(new Dimension(280, 36));
         checkInBtn.addActionListener(e -> handleCheckIn());
@@ -329,7 +320,7 @@ public class MainFrame extends JFrame {
         opsPanel.add(Box.createVerticalStrut(10));
 
         // --- Card 2: Check-out Box ---
-        JPanel checkOutBox = createStyledCard("📤 Vehicle Check-Out & Billing");
+        JPanel checkOutBox = createStyledCard("Vehicle Check-Out & Billing", UiIcon.checkOut(16, new Color(225, 29, 72)));
         checkOutBox.add(createFieldLabel("Plate or Slot ID:"));
         checkOutField = new JTextField();
         checkOutField.setFont(new Font("Consolas", Font.BOLD, 14));
@@ -339,8 +330,9 @@ public class MainFrame extends JFrame {
         checkOutBox.add(checkOutField);
         checkOutBox.add(Box.createVerticalStrut(10));
 
-        ModernButton checkOutBtn = new ModernButton("🧾 Compute Fee & Clear Slot",
+        ModernButton checkOutBtn = new ModernButton(" Compute Fee & Clear Slot",
                 new Color(225, 29, 72), new Color(190, 18, 60));
+        checkOutBtn.setIcon(UiIcon.checkOut(14, Color.WHITE));
         checkOutBtn.setPreferredSize(new Dimension(280, 36));
         checkOutBtn.setMaximumSize(new Dimension(280, 36));
         checkOutBtn.addActionListener(e -> handleCheckOut(checkOutField.getText()));
@@ -350,16 +342,18 @@ public class MainFrame extends JFrame {
         opsPanel.add(Box.createVerticalStrut(10));
 
         // --- Card 3: Quick Simulation Tools ---
-        JPanel toolsBox = createStyledCard("⚡ Quick Demonstration Tools");
+        JPanel toolsBox = createStyledCard("Quick Demonstration Tools", UiIcon.lightning(15, new Color(217, 119, 6)));
         JPanel toolBtns = new JPanel(new GridLayout(1, 2, 8, 0));
         toolBtns.setOpaque(false);
         toolBtns.setMaximumSize(new Dimension(300, 32));
 
-        ModernButton demoCarBtn = new ModernButton("🚗 Test Car", new Color(71, 85, 105), new Color(51, 65, 85));
+        ModernButton demoCarBtn = new ModernButton(" Test Car", new Color(71, 85, 105), new Color(51, 65, 85));
+        demoCarBtn.setIcon(UiIcon.car(14, Color.WHITE));
         demoCarBtn.setCornerRadius(6);
         demoCarBtn.addActionListener(e -> quickDemoCheckIn(VehicleType.CAR));
 
-        ModernButton demoBikeBtn = new ModernButton("🏍️ Test Bike", new Color(71, 85, 105), new Color(51, 65, 85));
+        ModernButton demoBikeBtn = new ModernButton(" Test Bike", new Color(71, 85, 105), new Color(51, 65, 85));
+        demoBikeBtn.setIcon(UiIcon.bike(14, Color.WHITE));
         demoBikeBtn.setCornerRadius(6);
         demoBikeBtn.addActionListener(e -> quickDemoCheckIn(VehicleType.BIKE));
 
@@ -371,7 +365,7 @@ public class MainFrame extends JFrame {
         return opsPanel;
     }
 
-    private JPanel createStyledCard(String title) {
+    private JPanel createStyledCard(String title, Icon icon) {
         JPanel card = new JPanel();
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
         card.setBackground(Color.WHITE);
@@ -379,7 +373,8 @@ public class MainFrame extends JFrame {
                 BorderFactory.createLineBorder(new Color(226, 232, 240), 1, true),
                 new EmptyBorder(10, 12, 10, 12)));
 
-        JLabel t = new JLabel(title);
+        JLabel t = new JLabel(" " + title);
+        if (icon != null) t.setIcon(icon);
         t.setFont(new Font("Segoe UI", Font.BOLD, 13));
         t.setForeground(new Color(30, 41, 59));
         t.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -401,8 +396,8 @@ public class MainFrame extends JFrame {
         tabs.setFont(new Font("Segoe UI", Font.BOLD, 12));
         tabs.setBackground(Color.WHITE);
 
-        tabs.addTab("🏢 Floor 1 (Ground Deck)", createFloorView(1));
-        tabs.addTab("🏢 Floor 2 (Upper Deck)", createFloorView(2));
+        tabs.addTab("Floor 1 (Ground Deck)", UiIcon.building(14, new Color(71, 85, 105)), createFloorView(1));
+        tabs.addTab("Floor 2 (Upper Deck)", UiIcon.building(14, new Color(71, 85, 105)), createFloorView(2));
 
         return tabs;
     }
@@ -458,21 +453,22 @@ public class MainFrame extends JFrame {
         }
         container.add(grid, BorderLayout.CENTER);
 
-        // Legend bar
+        // Legend bar with Vector Icons
         JPanel legend = new JPanel(new FlowLayout(FlowLayout.CENTER, 18, 4));
         legend.setOpaque(false);
-        legend.add(createLegendItem("🟢 Vacant Bay", new Color(22, 101, 52)));
-        legend.add(createLegendItem("🔴 Occupied Bay", new Color(185, 28, 28)));
-        legend.add(createLegendItem("🚗 Car Designated (₹20/h)", new Color(30, 41, 59)));
-        legend.add(createLegendItem("🏍️ Bike Designated (₹10/h)", new Color(30, 41, 59)));
-        legend.add(createLegendItem("💡 Click any slot to Park/Clear", new Color(37, 99, 235)));
+        legend.add(createLegendItem("Vacant Bay", UiIcon.availableDot(10), new Color(22, 101, 52)));
+        legend.add(createLegendItem("Occupied Bay", UiIcon.occupiedDot(10), new Color(185, 28, 28)));
+        legend.add(createLegendItem("Car Designated (Rs. 20/hr)", UiIcon.car(13, new Color(30, 41, 59)), new Color(30, 41, 59)));
+        legend.add(createLegendItem("Bike Designated (Rs. 10/hr)", UiIcon.bike(13, new Color(30, 41, 59)), new Color(30, 41, 59)));
+        legend.add(createLegendItem("Click any slot to Park/Clear", UiIcon.lightning(12, new Color(37, 99, 235)), new Color(37, 99, 235)));
         container.add(legend, BorderLayout.SOUTH);
 
         return container;
     }
 
-    private JLabel createLegendItem(String text, Color color) {
-        JLabel l = new JLabel(text);
+    private JLabel createLegendItem(String text, Icon icon, Color color) {
+        JLabel l = new JLabel(" " + text);
+        if (icon != null) l.setIcon(icon);
         l.setFont(new Font("Segoe UI", Font.PLAIN, 11));
         l.setForeground(color);
         return l;
@@ -490,7 +486,8 @@ public class MainFrame extends JFrame {
         JPanel toolBar = new JPanel(new BorderLayout(10, 0));
         toolBar.setOpaque(false);
 
-        JLabel title = new JLabel("📋 Live Activity & Audit Transaction Log");
+        JLabel title = new JLabel(" Live Activity & Audit Transaction Log");
+        title.setIcon(UiIcon.building(16, new Color(30, 41, 59)));
         title.setFont(new Font("Segoe UI", Font.BOLD, 13));
         title.setForeground(new Color(30, 41, 59));
         toolBar.add(title, BorderLayout.WEST);
@@ -498,8 +495,9 @@ public class MainFrame extends JFrame {
         JPanel controls = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
         controls.setOpaque(false);
 
-        // Real-time search box
-        JLabel sLbl = new JLabel("🔍 Filter:");
+        // Real-time search box with Search Vector Icon
+        JLabel sLbl = new JLabel(" Filter:");
+        sLbl.setIcon(UiIcon.search(13, new Color(100, 116, 139)));
         sLbl.setFont(new Font("Segoe UI", Font.PLAIN, 11));
         searchField = new JTextField(12);
         searchField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
@@ -517,9 +515,10 @@ public class MainFrame extends JFrame {
         filterCombo.addActionListener(e -> applyTableFilter());
         controls.add(filterCombo);
 
-        // Export CSV button
-        ModernButton exportBtn = new ModernButton("💾 Export CSV", new Color(15, 23, 42), new Color(30, 41, 59), 6);
-        exportBtn.setPreferredSize(new Dimension(110, 26));
+        // Export CSV button with Export Vector Icon
+        ModernButton exportBtn = new ModernButton(" Export CSV", new Color(15, 23, 42), new Color(30, 41, 59), 6);
+        exportBtn.setIcon(UiIcon.export(12, Color.WHITE));
+        exportBtn.setPreferredSize(new Dimension(115, 26));
         exportBtn.setFont(new Font("Segoe UI", Font.BOLD, 11));
         exportBtn.addActionListener(e -> exportRecordsToCsv());
         controls.add(exportBtn);
@@ -553,14 +552,31 @@ public class MainFrame extends JFrame {
         centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
         table.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
         table.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
-        table.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
         table.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
         table.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);
         table.getColumnModel().getColumn(5).setCellRenderer(centerRenderer);
         table.getColumnModel().getColumn(6).setCellRenderer(centerRenderer);
         table.getColumnModel().getColumn(7).setCellRenderer(centerRenderer);
 
-        // Status Renderer with pill appearance
+        // Vehicle Type Column with Vector Icon
+        table.getColumnModel().getColumn(2).setCellRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable tbl, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
+                JLabel c = (JLabel) super.getTableCellRendererComponent(tbl, value, isSelected, hasFocus, row, col);
+                c.setHorizontalAlignment(SwingConstants.CENTER);
+                String str = String.valueOf(value);
+                if (str.toUpperCase().contains("CAR")) {
+                    c.setIcon(UiIcon.car(14, new Color(59, 130, 246)));
+                    c.setText(" Car");
+                } else {
+                    c.setIcon(UiIcon.bike(14, new Color(139, 92, 246)));
+                    c.setText(" Bike");
+                }
+                return c;
+            }
+        });
+
+        // Status Renderer with Vector Status Icons
         table.getColumnModel().getColumn(8).setCellRenderer(new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable tbl, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
@@ -570,10 +586,12 @@ public class MainFrame extends JFrame {
                 String st = String.valueOf(value);
                 if ("PAID".equalsIgnoreCase(st)) {
                     c.setForeground(new Color(22, 101, 52));
-                    c.setText("✓ PAID");
+                    c.setIcon(UiIcon.checkMark(12, new Color(22, 101, 52)));
+                    c.setText(" PAID");
                 } else {
                     c.setForeground(new Color(180, 83, 9));
-                    c.setText("● ACTIVE");
+                    c.setIcon(UiIcon.occupiedDot(9));
+                    c.setText(" ACTIVE");
                 }
                 return c;
             }
@@ -734,7 +752,7 @@ public class MainFrame extends JFrame {
     private void updatePreferredSlotDropdown() {
         if (preferredSlotCombo == null) return;
         preferredSlotCombo.removeAllItems();
-        preferredSlotCombo.addItem("⚡ Auto-Assign Best Slot");
+        preferredSlotCombo.addItem("Auto-Assign Best Slot");
 
         VehicleType allowed = carRadio.isSelected() ? VehicleType.CAR : VehicleType.BIKE;
         for (ParkingSlot s : parkingManager.getAllSlots()) {
@@ -849,7 +867,7 @@ public class MainFrame extends JFrame {
                 } catch (Exception ignored) {}
             }
         }
-        revenueVal.setText(String.format("₹ %.2f", totalRev));
+        revenueVal.setText(String.format("Rs. %.2f", totalRev));
         revenueSubVal.setText(paidCount + " Completed Bookings");
 
         // Floor progress
@@ -883,7 +901,7 @@ public class MainFrame extends JFrame {
     private void startLiveClock() {
         Timer timer = new Timer(1000, e -> {
             if (liveClockLabel != null) {
-                liveClockLabel.setText(LocalDateTime.now().format(DATE_TIME_FMT));
+                liveClockLabel.setText(" " + LocalDateTime.now().format(DATE_TIME_FMT));
             }
         });
         timer.start();

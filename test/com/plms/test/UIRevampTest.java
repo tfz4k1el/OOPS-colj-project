@@ -20,7 +20,9 @@ public class UIRevampTest {
         System.out.println("=== Starting UI Revamp Automated Verification ===");
 
         FeeCalculator feeCalculator = new FeeCalculator(10.0);
-        DatabaseManager dbManager = new DatabaseManager();
+        String testCsv = "parking_records_ui_test.csv";
+        new java.io.File(testCsv).delete();
+        DatabaseManager dbManager = new DatabaseManager(testCsv);
         ParkingManager manager = new ParkingManager(feeCalculator, dbManager);
 
         // 1. Verify MainFrame Instantiation
@@ -51,6 +53,7 @@ public class UIRevampTest {
 
         receipt.dispose();
         frame.dispose();
+        new java.io.File(testCsv).delete();
 
         System.out.println("=== UI Revamp Verification: All Checks Passed! ===");
         System.exit(0);

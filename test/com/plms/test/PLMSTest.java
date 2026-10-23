@@ -17,7 +17,9 @@ public class PLMSTest {
         int total = 0;
 
         FeeCalculator feeCalculator = new FeeCalculator(10.0);
-        DatabaseManager dbManager = new DatabaseManager();
+        String testCsv = "parking_records_test.csv";
+        new java.io.File(testCsv).delete();
+        DatabaseManager dbManager = new DatabaseManager(testCsv);
         ParkingManager manager = new ParkingManager(feeCalculator, dbManager);
 
         // Test 1: Verify Initial Capacity
@@ -86,6 +88,7 @@ public class PLMSTest {
         }
 
         System.out.printf("=== Test Results: %d / %d Tests Passed ===%n", passed, total);
+        new java.io.File(testCsv).delete();
         if (passed != total) {
             System.exit(1);
         }

@@ -1,6 +1,5 @@
 package com.plms.ui;
 
-import com.plms.model.Booking;
 import com.plms.model.ParkingSlot;
 import com.plms.model.Vehicle;
 import com.plms.model.VehicleType;
@@ -16,8 +15,8 @@ import java.util.function.Consumer;
 
 /**
  * Revamped visual card representation of a single ParkingSlot.
- * Features realistic Indian license plates for occupied slots, live duration tags,
- * smooth hover effects, and crisp status badges.
+ * Uses pure Java2D vector icons via UiIcon to guarantee flawless rendering
+ * on any platform without missing font glyphs or broken emojis.
  */
 public class SlotPanel extends JPanel {
     private final ParkingSlot slot;
@@ -87,7 +86,9 @@ public class SlotPanel extends JPanel {
         idLabel.setFont(new Font("Segoe UI", Font.BOLD, 13));
         idLabel.setForeground(new Color(15, 23, 42));
 
-        typeBadge = new JLabel(slot.getAllowedType() == VehicleType.CAR ? "🚗 CAR" : "🏍️ BIKE");
+        boolean isCar = slot.getAllowedType() == VehicleType.CAR;
+        typeBadge = new JLabel(isCar ? " CAR" : " BIKE");
+        typeBadge.setIcon(isCar ? UiIcon.car(14, new Color(71, 85, 105)) : UiIcon.bike(14, new Color(71, 85, 105)));
         typeBadge.setFont(new Font("Segoe UI", Font.BOLD, 10));
         typeBadge.setForeground(new Color(71, 85, 105));
 
@@ -103,7 +104,7 @@ public class SlotPanel extends JPanel {
         // Status Pill
         JPanel pillWrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
         pillWrapper.setOpaque(false);
-        statusPill = new JLabel("● VACANT");
+        statusPill = new JLabel("VACANT");
         statusPill.setFont(new Font("Segoe UI", Font.BOLD, 11));
         statusPill.setForeground(Color.WHITE);
         statusPill.setBorder(new EmptyBorder(2, 10, 2, 10));
@@ -138,7 +139,7 @@ public class SlotPanel extends JPanel {
         centerBox.add(Box.createVerticalStrut(4));
 
         // Meta details (Tariff or Elapsed Time)
-        metaLabel = new JLabel("Rate: ₹20/hr", SwingConstants.CENTER);
+        metaLabel = new JLabel("Rate: Rs. 20/hr", SwingConstants.CENTER);
         metaLabel.setFont(new Font("Segoe UI", Font.PLAIN, 10));
         metaLabel.setForeground(new Color(100, 116, 139));
         metaLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -155,17 +156,20 @@ public class SlotPanel extends JPanel {
 
     public void refresh() {
         if (slot.isAvailable()) {
-            statusPill.setText("● VACANT");
+            statusPill.setText("VACANT");
+            statusPill.setIcon(UiIcon.availableDot(10));
             plateBadge.setText("BAY READY");
             plateBadge.setForeground(new Color(100, 116, 139));
             double rate = slot.getAllowedType() == VehicleType.CAR ? 20.0 : 10.0;
-            metaLabel.setText(String.format("Standard Tariff: ₹%.0f/hr", rate));
+            metaLabel.setText(String.format("Standard Tariff: Rs. %.0f/hr", rate));
+            metaLabel.setIcon(null);
             metaLabel.setForeground(new Color(71, 85, 105));
-            actionHint.setText("👉 Click to Check-In");
+            actionHint.setText("Click to Check-In");
             actionHint.setForeground(new Color(16, 185, 129));
             setToolTipText("Slot " + slot.getSlotId() + " is vacant and ready for " + slot.getAllowedType());
         } else {
-            statusPill.setText("● OCCUPIED");
+            statusPill.setText("OCCUPIED");
+            statusPill.setIcon(UiIcon.occupiedDot(10));
             Vehicle v = slot.getCurrentVehicle();
             if (v != null) {
                 plateBadge.setText(v.getLicensePlate());
@@ -175,7 +179,8 @@ public class SlotPanel extends JPanel {
                 long minutes = Math.max(1, stay.toMinutes());
                 String durationStr = minutes < 60 ? (minutes + " mins") : (stay.toHours() + "h " + (minutes % 60) + "m");
 
-                metaLabel.setText("⏱️ Stay: " + durationStr);
+                metaLabel.setText("Stay: " + durationStr);
+                metaLabel.setIcon(UiIcon.clock(11, new Color(185, 28, 28)));
                 metaLabel.setForeground(new Color(185, 28, 28));
                 setToolTipText(String.format("Occupied by %s since %s (%s)",
                         v.getLicensePlate(), v.getEntryTime().toLocalTime().withNano(0), durationStr));
@@ -183,8 +188,9 @@ public class SlotPanel extends JPanel {
                 plateBadge.setText("PARKED");
                 plateBadge.setForeground(new Color(15, 23, 42));
                 metaLabel.setText("Active Ticket");
+                metaLabel.setIcon(null);
             }
-            actionHint.setText("⚡ Click to Check-Out");
+            actionHint.setText("Click to Check-Out");
             actionHint.setForeground(new Color(225, 29, 72));
         }
         repaint();

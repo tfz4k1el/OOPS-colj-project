@@ -2,6 +2,11 @@
 bin/
 *.class
 
+# Test output files
+*_test.csv
+Exported_*.csv
+Receipt_*.txt
+
 # Package Files
 *.jar
 *.war
